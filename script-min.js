@@ -2579,6 +2579,37 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
 
+    /////////////////////////////////
+    /* Modal CTA Button Animation */
+    /////////////////////////////////
+
+    const modalCtaButtons = document.querySelectorAll(
+      '[data-animate-button="modal-cta"]'
+    );
+
+    modalCtaButtons.forEach((button) => {
+      gsap.set(button, {
+        opacity: 0,
+        y: 24,
+        scale: 0.96,
+      });
+
+      ScrollTrigger.create({
+        trigger: button,
+        start: "top 90%",
+        once: true,
+        onEnter: () => {
+          gsap.to(button, {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.75,
+            ease: "power2.out",
+          });
+        },
+      });
+    });    
+    
     // IMPORTANT: Refresh ScrollTrigger after all animations are set up
     // console.log(
     //   "Font-dependent animations initialized - refreshing ScrollTrigger"
