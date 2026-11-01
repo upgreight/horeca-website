@@ -322,44 +322,16 @@ document.addEventListener("DOMContentLoaded", function () {
     scale: 1.25,
   });
 
-  // PRELOADER ANIMATION - RUNS IMMEDIATELY
-  if (isMobile()) {
-    // MOBILE TIMELINE
-    // console.log("Initializing mobile preloader timeline");
+  // Start states are set: lift the CSS guard from the Webflow head code
+  document.documentElement.classList.add("intro-ready");
 
-    // Mobile-specific initial states
-    gsap.set(".preloader_image_wrap img", {
-      scale: 1,
-      opacity: 1,
-    });
+  // TABLET AND BELOW (Webflow breakpoint 991px): no preloader, intro starts right away
+  if (window.matchMedia("(max-width: 991px)").matches) {
+    gsap.set(".preloader_wrap", { display: "none" });
 
-    const mobileTimeline = createPreloaderTimeline();
-
-    mobileTimeline
-      // 1. Animate the image from scale 1 to 1.1
-      .to(".preloader_image_wrap img", {
-        scale: 1.1,
-        duration: 1.5,
-        ease: "power4.out",
-      })
-      // 3. Hold for a moment
-      .to({}, { duration: 1 })
-
-      // 5. Animate preloader out (starts while title is exiting)
-      .to(
-        ".preloader_wrap",
-        {
-          height: "0svh",
-          duration: 1.5,
-          ease: "power4.out",
-          onComplete: function () {
-            gsap.set(".preloader_wrap", { display: "none" });
-          },
-        },
-        "-=0.1"
-      ) // Start before title chars finish exiting
-
-      // 6. Animate on-load elements (starts 0.5s before preloader finishes)
+    gsap
+      .timeline({ onComplete: refreshScrollTriggers })
+      .to(".loader_video", { scale: 1, duration: 2, ease: "power4.out" }, 0)
       .to(
         headingSplit ? headingSplit.words : [],
         {
@@ -369,9 +341,8 @@ document.addEventListener("DOMContentLoaded", function () {
           ease: "power4.out",
           stagger: 0.05,
         },
-        "-=0.65"
+        0
       )
-
       .to(
         textSplit ? textSplit.lines : [],
         {
@@ -381,30 +352,13 @@ document.addEventListener("DOMContentLoaded", function () {
           ease: "power4.out",
           stagger: 0.1,
         },
-        "-=0.85"
+        0.3
       )
-
-      .to(
-        ".loader_video",
-        {
-          scale: 1,
-          duration: 2,
-          ease: "power4.out",
-        },
-        "-=2.25"
-      )
-
-      // 7. Animate navigation component at the very end
       .to(
         ".nav_component",
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power2.out",
-        },
-        "-=1"
-      ); // Start slightly before video animation completes
+        { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" },
+        0.4
+      );
   } else {
     // DESKTOP TIMELINE
     // console.log("Initializing desktop preloader timeline");
